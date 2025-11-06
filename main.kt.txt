@@ -1,0 +1,33 @@
+import com.google.gson.Gson
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+data class ProductResponse(val products: List<Product>)
+data class Product(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val price: Double,
+    val currency: String,
+    val in_stock: Boolean
+)
+
+fun fetchProducts() {
+    val client = OkHttpClient()
+    val request = Request.Builder()
+        .url("https://jsonkeeper.com/b/MX0A")
+        .build()
+
+    val response = client.newCall(request).execute()
+    val json = response.body?.string()
+
+    val productResponse = Gson().fromJson(json, ProductResponse::class.java)
+
+    productResponse.products.forEach {
+        println("Producto: ${it.name} - Precio: ${it.price} ${it.currency}")
+    }
+}
+
+fun main() {
+    fetchProducts()
+}
